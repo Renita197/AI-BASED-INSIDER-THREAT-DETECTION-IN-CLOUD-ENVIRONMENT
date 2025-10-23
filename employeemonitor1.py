@@ -16,9 +16,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.send"
 ]
-CREDENTIALS_FILE = "credentials.json"
+CREDENTIALS_FILE = "credentials.json"  # Place your credentials.json locally
 TOKEN_FILE = "token.json"
-ADMIN_EMAIL = "xyz@gmail.com"   # 🔴 Replace with your real admin email
+ADMIN_EMAIL = "admin@example.com"       # 🔴 Placeholder email
 TRUST_THRESHOLD = 50
 SUSPICIOUS_KEYWORDS = ["password", "hack", "leak", "resign", "confidential", "cheat", "login", "otp"]
 LOG_FILE = "employee_log.csv"
@@ -130,7 +130,7 @@ def analyze_gmail_messages(service, max_results=5):
 
 def monitor_employee(employee_name="Employee1"):
     service = get_gmail_service()
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)   # DirectShow backend for Windows
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     trust_score = 100
     init_log()
 
@@ -140,40 +140,30 @@ def monitor_employee(employee_name="Employee1"):
             print("⚠️ Webcam not detected.")
             break
 
-        # Webcam behavior
         behavior_score = analyze_behavior(frame)
-
-        # Gmail check
         email_score, suspicious_words = analyze_gmail_messages(service, max_results=5)
-
-        # Final trust score
         trust_score = int((behavior_score + email_score) / 2)
 
-        # Check office hours
         now = datetime.now().time()
         unusual_time_flag = False
         if now < OFFICE_START or now > OFFICE_END:
             unusual_time_flag = True
-            trust_score -= 20  # penalize trust score for working outside office hours
+            trust_score -= 20
             suspicious_words.append("Unusual login time")
 
-        # Display score on webcam
         cv2.putText(frame, f"Trust Score: {trust_score}", (30, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1,
                     (0, 255, 0) if trust_score >= TRUST_THRESHOLD else (0, 0, 255), 2)
         cv2.imshow("Employee Monitor", frame)
-
-        # Log activity
         log_activity(employee_name, behavior_score, email_score, trust_score, suspicious_words)
 
-        # Alert if low trust, suspicious keywords, or unusual login time
         if trust_score < TRUST_THRESHOLD or suspicious_words:
             send_gmail_alert(service, employee_name, trust_score,
                              suspicious_words=[w for w in suspicious_words if w != "Unusual login time"],
                              unusual_time=unusual_time_flag)
             break
 
-        if cv2.waitKey(1000) & 0xFF == ord("q"):  # check once per second
+        if cv2.waitKey(1000) & 0xFF == ord("q"):
             break
 
     cap.release()
@@ -182,6 +172,8 @@ def monitor_employee(employee_name="Employee1"):
 
 if __name__ == "__main__":
     monitor_employee("John_Doe")
+
+
 
 
 
