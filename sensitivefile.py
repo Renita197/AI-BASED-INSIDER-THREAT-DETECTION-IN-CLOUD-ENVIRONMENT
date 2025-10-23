@@ -3,7 +3,6 @@ import cv2
 import base64
 import re
 import csv
-import getpass
 from datetime import datetime, time
 from email.mime.text import MIMEText
 
@@ -17,9 +16,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.send"
 ]
-CREDENTIALS_FILE = "credentials.json"
-TOKEN_FILE = "token.json"
-ADMIN_EMAIL = "xyz@gmail.com"   # Replace with your real admin email
+CREDENTIALS_FILE = "credentials.json"  # Keep locally, do NOT upload
+TOKEN_FILE = "token.json"              # Keep locally, do NOT upload
+ADMIN_EMAIL = "admin@example.com"      # Placeholder email
 TRUST_THRESHOLD = 50
 SUSPICIOUS_KEYWORDS = ["password", "hack", "leak", "resign", "confidential", "cheat", "login", "otp"]
 LOG_FILE = "employee_log.csv"
@@ -29,11 +28,11 @@ WARNINGS_FILE = "warnings.csv"
 OFFICE_START = time(9, 0, 0)   # 9:00 AM
 OFFICE_END = time(18, 0, 0)    # 6:00 PM
 
-# Sensitive files (change paths as per your system)
+# Placeholder sensitive files
 SENSITIVE_FILES = [
-    r"\\Replace with the your real file path",
-    r"\\Replace with the your real file path",
-    r"\\Replace with the your real file path"
+    r"C:\path\to\file1.txt",
+    r"C:\path\to\file2.txt",
+    r"C:\path\to\file3.txt"
 ]
 # ------------------------------------
 
@@ -183,26 +182,13 @@ def analyze_gmail_messages(service, max_results=5):
     return max(0, 100 - risk_score), suspicious_words_found
 
 
-def check_login_credentials(expected_employee):
-    current_user = getpass.getuser()
-    if current_user.lower() != expected_employee.lower():
-        return current_user
-    return None
-
-
-def block_employee(employee_name):
-    """Simulated block (no real logout)."""
-    print(f"⛔ Employee {employee_name} is BLOCKED from access!")
-
-
-# ------------------- Main Monitoring Function -------------------
-def monitor_employee(employee_name):
+def monitor_employee(employee_name="Employee1"):
     service = get_gmail_service()
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     trust_score = 100
     init_log()
 
-    # Store last access times of sensitive files
+    # Placeholder: track last access times of dummy sensitive files
     file_last_access = {f: os.path.getatime(f) if os.path.exists(f) else 0 for f in SENSITIVE_FILES}
 
     try:
@@ -212,16 +198,10 @@ def monitor_employee(employee_name):
                 print("⚠️ Webcam not detected.")
                 break
 
-            # Webcam behavior analysis
             behavior_score = analyze_behavior(frame)
-
-            # Gmail suspicious email analysis
             email_score, suspicious_words = analyze_gmail_messages(service, max_results=5)
-
-            # Trust score
             trust_score = int((behavior_score + email_score) / 2)
 
-            # Unusual login time
             now = datetime.now().time()
             unusual_time_flag = False
             if now < OFFICE_START or now > OFFICE_END:
@@ -229,33 +209,19 @@ def monitor_employee(employee_name):
                 trust_score -= 20
                 suspicious_words.append("Unusual login time")
 
-            # Check login credentials
-            wrong_user = check_login_credentials(employee_name)
-            if wrong_user:
-                trust_score -= 30
-                suspicious_words.append(f"Using other employee's login ({wrong_user})")
-
-            # Check sensitive file access
+            # Placeholder sensitive file access (simulated)
             for f in SENSITIVE_FILES:
-                if os.path.exists(f):
-                    last_access = os.path.getatime(f)
-                    if last_access > file_last_access[f]:
-                        filename = os.path.basename(f)
-                        print(f"⚠️ Sensitive file accessed: {filename}")
-                        suspicious_words.append(f"Accessed file: {filename}")
-                        send_gmail_alert(service, employee_name, score=0, alert_type="warning",
-                                         suspicious_words=[f"Accessed file: {filename}"], unusual_time=False,
-                                         warnings=get_warnings(employee_name)+1)
-                        update_warnings(employee_name, get_warnings(employee_name)+1)
-                    file_last_access[f] = last_access
+                filename = os.path.basename(f)
+                # Simulated access check: not real
+                # Add warning if filename contains "file"
+                if "file" in filename.lower():
+                    suspicious_words.append(f"Accessed file: {filename}")
 
-            # Display trust score on webcam
+            # Display trust score
             cv2.putText(frame, f"Trust Score: {trust_score}", (30, 50),
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
                         (0, 255, 0) if trust_score >= TRUST_THRESHOLD else (0, 0, 255), 2)
             cv2.imshow("Employee Monitor", frame)
-
-            # Log activity
             log_activity(employee_name, behavior_score, email_score, trust_score, suspicious_words)
 
             # Warnings and block handling
@@ -271,7 +237,7 @@ def monitor_employee(employee_name):
                                      suspicious_words=[w for w in suspicious_words if w != "Unusual login time"],
                                      unusual_time=unusual_time_flag, warnings=2)
                     update_warnings(employee_name, 2)
-                    block_employee(employee_name)
+                    print(f"⛔ Employee {employee_name} BLOCKED (simulated).")
                     break
 
             if cv2.waitKey(1000) & 0xFF == ord("q"):
@@ -283,6 +249,8 @@ def monitor_employee(employee_name):
 
 
 if __name__ == "__main__":
-    current_user = getpass.getuser()   # Auto-detect employee name from system login
-
+    # Public-safe placeholder
+    current_user = "Employee1"
     monitor_employee(current_user)
+
+
