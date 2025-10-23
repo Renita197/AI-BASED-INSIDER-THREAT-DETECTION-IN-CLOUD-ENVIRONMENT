@@ -18,7 +18,7 @@ SCOPES = [
 ]
 CREDENTIALS_FILE = "credentials.json"
 TOKEN_FILE = "token.json"
-ADMIN_EMAIL = "renitaalan2005@gmail.com"   # 🔴 Replace with your real admin email
+ADMIN_EMAIL = "xyz@gmail.com"   # 🔴 Replace with your real admin email
 TRUST_THRESHOLD = 50
 SUSPICIOUS_KEYWORDS = ["password", "hack", "leak", "resign", "confidential", "cheat", "login", "otp"]
 LOG_FILE = "employee_log.csv"
@@ -182,5 +182,6 @@ def monitor_employee(employee_name="Employee1"):
 
 if __name__ == "__main__":
     monitor_employee("John_Doe")
+
 
 
