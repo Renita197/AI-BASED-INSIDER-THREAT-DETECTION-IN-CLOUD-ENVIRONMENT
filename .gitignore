@@ -1,0 +1,19 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local environment files
+.env
+*.env
+venv/
+env/
+
+# Ignore credentials and tokens
+credentials.json
+token.json
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
