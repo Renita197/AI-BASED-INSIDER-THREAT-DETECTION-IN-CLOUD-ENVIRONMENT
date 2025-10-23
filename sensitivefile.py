@@ -19,7 +19,7 @@ SCOPES = [
 ]
 CREDENTIALS_FILE = "credentials.json"
 TOKEN_FILE = "token.json"
-ADMIN_EMAIL = "renitaalan2005@gmail.com"   # Replace with your real admin email
+ADMIN_EMAIL = "xyz@gmail.com"   # Replace with your real admin email
 TRUST_THRESHOLD = 50
 SUSPICIOUS_KEYWORDS = ["password", "hack", "leak", "resign", "confidential", "cheat", "login", "otp"]
 LOG_FILE = "employee_log.csv"
@@ -31,9 +31,9 @@ OFFICE_END = time(18, 0, 0)    # 6:00 PM
 
 # Sensitive files (change paths as per your system)
 SENSITIVE_FILES = [
-    r"D:\Sensitive Files\lord of rings.jpg",
-    r"D:\Sensitive Files\stephen-king.jpg",
-    r"D:\Sensitive Files\to kill a moking bird.jpg"
+    r"\\Replace with the your real file path",
+    r"\\Replace with the your real file path",
+    r"\\Replace with the your real file path"
 ]
 # ------------------------------------
 
@@ -284,4 +284,5 @@ def monitor_employee(employee_name):
 
 if __name__ == "__main__":
     current_user = getpass.getuser()   # Auto-detect employee name from system login
+
     monitor_employee(current_user)
